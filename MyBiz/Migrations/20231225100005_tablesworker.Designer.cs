@@ -12,8 +12,8 @@ using MyBiz.DAL;
 namespace MyBiz.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231224232700_entitiestables")]
-    partial class entitiestables
+    [Migration("20231225100005_tablesworker")]
+    partial class tablesworker
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

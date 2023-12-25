@@ -1,11 +1,19 @@
 {
   "Version": 1,
-  "Hash": "wilHf7ZE8s9SMmdkC5Y1+BSgEqPtwR4Nx7om1L7eyoE=",
+  "Hash": "oNgfD1u8dfShtRghfmFuKERDbXu3Dx7tYnhjwTQPP7g=",
   "Source": "MyBiz",
   "BasePath": "_content/MyBiz",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "MyBiz\\wwwroot",
+      "Source": "MyBiz",
+      "ContentRoot": "C:\\Users\\ll novbe\\Desktop\\MyBizApi\\MyBiz\\wwwroot\\",
+      "BasePath": "_content/MyBiz",
+      "Pattern": "**"
+    }
+  ],
   "Assets": []
 }

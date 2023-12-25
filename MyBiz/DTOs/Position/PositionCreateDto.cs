@@ -4,7 +4,6 @@ namespace MyBiz.DTOs.Position
 {
     public class PositionCreateDto
     {
-        public int Id { get; set; }
         public string Name { get; set; }
     }
     public class PositionCreateDtoValidator : AbstractValidator<PositionCreateDto>

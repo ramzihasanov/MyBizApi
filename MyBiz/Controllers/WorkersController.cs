@@ -1,6 +1,4 @@
-﻿using AutoMapper.Execution;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using MyBiz.DAL;
 using MyBiz.DTOs.Worker;
@@ -15,11 +13,13 @@ namespace MyBiz.Controllers
     {
         private readonly AppDbContext _appDb;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _env;
 
-        public WorkersController(AppDbContext appDb, IMapper mapper)
+        public WorkersController(AppDbContext appDb, IMapper mapper,IWebHostEnvironment env)
         {
             _appDb = appDb;
             _mapper = mapper;
+            this._env = env;
         }
 
         [HttpGet]
@@ -44,7 +44,7 @@ namespace MyBiz.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(WorkerCreateDto dto)
+        public IActionResult Create([FromForm]WorkerCreateDto dto)
         {
             var worker = _mapper.Map<Worker>(dto);
             worker.CreateDate = DateTime.UtcNow.AddHours(4);
@@ -53,10 +53,10 @@ namespace MyBiz.Controllers
 
             if (dto.ImageFile != null && dto.ImageFile.Length < 1048576 && !(dto.ImageFile.ContentType != "image/png" && dto.ImageFile.ContentType != "image/jpeg"))
             {
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "upload");
-                string FileName = Helper.GetFileName(path, "upload", dto.ImageFile);
-                var filePath = Path.Combine(path, FileName);
-                worker.ImageUrl = filePath;
+                string fileNmae = Helper.GetFileName(_env.WebRootPath, "upload", dto.ImageFile);
+
+                string path = Path.Combine(_env.WebRootPath, "upload", worker.ImageUrl);
+                worker.ImageUrl = fileNmae;
             }
             else
             {
@@ -70,7 +70,7 @@ namespace MyBiz.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, WorkerUpdateDto dto)
+        public IActionResult Update([FromForm]int id, WorkerUpdateDto dto)
         {
             var worker = _appDb.Workers.Find(id);
             if (worker == null)
@@ -83,10 +83,13 @@ namespace MyBiz.Controllers
 
             if (dto.ImageFile != null && dto.ImageFile.Length < 1048576 && !(dto.ImageFile.ContentType != "image/png" && dto.ImageFile.ContentType != "image/jpeg"))
             {
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "upload");
-                string FileName = Helper.GetFileName(path, "upload", dto.ImageFile);
-                var filePath = Path.Combine(path, FileName);
-                worker.ImageUrl = filePath;
+                string fileNmae = Helper.GetFileName(_env.WebRootPath, "upload", dto.ImageFile);
+
+                string path = Path.Combine(_env.WebRootPath, "upload", worker.ImageUrl);
+
+               
+
+                worker.ImageUrl = fileNmae;
             }
 
             else
@@ -94,13 +97,7 @@ namespace MyBiz.Controllers
                 throw new Exception();
 
             }
-            //worker.Name=dto.Name;
-            //worker.About = dto.About;
-            //worker.PositionId=dto.PositionId;
-            //worker.TwitUrl=dto.TwitUrl;
-            //worker.InstaUrl = dto.InstaUrl;
-            //worker.FaceUrl = dto.FaceUrl;
-            //worker.LinkedinUrl = dto.LinkedinUrl;
+            
 
             worker.UpdateDate = DateTime.UtcNow.AddHours(4);
             _appDb.SaveChanges();

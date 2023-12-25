@@ -17,7 +17,7 @@ builder.Services.AddAutoMapper(typeof(MapProfile));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(opt => {
-    opt.UseSqlServer("Server=;Database=MyBizApi;Trusted_Connection=True;TrustServerCertificate=true");
+    opt.UseSqlServer("Server=DESKTOP-V775DN1;Database=MyBizApii;Trusted_Connection=True;TrustServerCertificate=true");
 
 });
 var app = builder.Build();

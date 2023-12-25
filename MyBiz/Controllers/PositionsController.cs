@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyBiz.DAL;
 using MyBiz.DTOs.Position;
-using MyBiz.DTOs.Worker;
 using MyBiz.Entities;
 
 namespace MyBiz.Controllers
@@ -20,7 +18,7 @@ namespace MyBiz.Controllers
             _appDb = appDb;
             _mapper = mapper;
         }
-        [HttpGet]
+        [HttpGet("")]
         public IActionResult GetAll()
         {
             var positions = _appDb.Positions.ToList();
@@ -53,7 +51,7 @@ namespace MyBiz.Controllers
         public IActionResult Update( PositionUpdateDto dto)
         {
             var position = _appDb.Positions.Find(dto.Id);
-            if (position == null) return BadRequest();
+            if (position == null) return NotFound();
             position = _mapper.Map(dto, position);
             position.UpdateDate = DateTime.UtcNow.AddHours(4);
             _appDb.SaveChanges();

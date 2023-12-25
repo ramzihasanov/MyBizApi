@@ -1,6 +1,6 @@
 ﻿namespace MyBiz.Helpers
 {
-    public class Helper
+    public static class Helper
     {
         public static string GetFileName(string rootPath, string folderName, IFormFile imageFile)
         {
