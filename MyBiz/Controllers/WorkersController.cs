@@ -23,9 +23,32 @@ namespace MyBiz.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetAll(string? search,int? positionId,int? order)
         {
-            var worker = _appDb.Workers.ToList();
+            var worker = _appDb.Workers.AsQueryable();
+            if(search != null)
+            {
+                worker=worker.Where(w=>w.Name.ToLower().Contains(search.Trim().ToLower()));
+            }
+            if(positionId != null)
+            {
+                worker=worker.Where(w=>w.PositionId==positionId);
+            }
+            if(order != null)
+            {
+                switch (order)
+                {
+                    case 0:
+                        worker = worker.OrderByDescending(x => x.CreateDate);
+                        break;
+                    case 1:
+                        worker = worker.OrderByDescending(x => x.Name);
+                        break;             
+                    default:
+                        return NotFound();
+                        break;
+                }
+            }
             var workerDtos = worker.Select(worker => _mapper.Map<WorkerGetDto>(worker));
             return Ok(workerDtos);
         }
@@ -47,15 +70,11 @@ namespace MyBiz.Controllers
         public IActionResult Create([FromForm]WorkerCreateDto dto)
         {
             var worker = _mapper.Map<Worker>(dto);
-            worker.CreateDate = DateTime.UtcNow.AddHours(4);
-            worker.UpdateDate =DateTime.UtcNow.AddHours(4);
             worker.IsDeleted = false;
 
             if (dto.ImageFile != null && dto.ImageFile.Length < 1048576 && !(dto.ImageFile.ContentType != "image/png" && dto.ImageFile.ContentType != "image/jpeg"))
             {
                 string fileNmae = Helper.GetFileName(_env.WebRootPath, "upload", dto.ImageFile);
-
-                string path = Path.Combine(_env.WebRootPath, "upload", worker.ImageUrl);
                 worker.ImageUrl = fileNmae;
             }
             else
@@ -84,11 +103,6 @@ namespace MyBiz.Controllers
             if (dto.ImageFile != null && dto.ImageFile.Length < 1048576 && !(dto.ImageFile.ContentType != "image/png" && dto.ImageFile.ContentType != "image/jpeg"))
             {
                 string fileNmae = Helper.GetFileName(_env.WebRootPath, "upload", dto.ImageFile);
-
-                string path = Path.Combine(_env.WebRootPath, "upload", worker.ImageUrl);
-
-               
-
                 worker.ImageUrl = fileNmae;
             }
 
@@ -99,7 +113,7 @@ namespace MyBiz.Controllers
             }
             
 
-            worker.UpdateDate = DateTime.UtcNow.AddHours(4);
+            
             _appDb.SaveChanges();
 
             return Ok(worker);
